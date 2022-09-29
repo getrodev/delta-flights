@@ -1,0 +1,52 @@
+import React from 'react'; 
+import './Instructions.css';
+import deltaSign from './delta-logo-4193.png';
+
+const emojis = [
+  {
+    emoji: '✈️',
+    name: "arrivals"
+  },
+  {
+    emoji: '🕺',
+    name: "dancing dude"
+  },
+  {
+    emoji: '😀',
+    name: "grinning face"
+  },
+  {
+    emoji: '💃',
+    name: "woman dancing"
+  },
+  {
+    emoji: '✈️',
+    name: "departure"
+  }
+];
+
+export default function Instructions() {
+
+  return(
+    <div className="container">
+      <img alt="delta airlines logo" src={deltaSign} />
+      <p>Supporting You Through Your Travel Journey</p>
+      <ul>
+        {
+          emojis.map(emoji => (
+            <li key={emoji.name}>
+              <button >
+                <span role="img" aria-label={emoji.name}
+                  id={emoji.name}>{emoji.emoji}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+      
+    </div>
+  );
+}
+
+
+ 
