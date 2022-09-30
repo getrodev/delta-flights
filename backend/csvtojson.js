@@ -1,8 +1,10 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const mongodb = require("mongodb").MongoClient; 
 const csvtojson = require("csvtojson");
 const mongoose = require('mongoose'); 
 
-let url = "mongodb+srv://delta-flights:487ROTVESxWYgRbj@cluster0.clmg9z6.mongodb.net/?retryWrites=true&w=majority";
+let url = process.env.MONGO_CONNECTION
  
 csvtojson()
   .fromFile("flights.csv")
