@@ -9,7 +9,9 @@ const getFlights = async(req, res, next) => {
 const getFlightsByDestinationOrigin = async(req, res, next) => {
   const destorigin = req.params.destorigin;
   const searchStr = destorigin.toUpperCase();
-  const flights = await Flight.find().exec();
+  //const flights = await Flight.find().exec();
+  const flights = await Flight.find(
+    {$or: [{ origin: searchStr }, { destination: destorigin }]}).exec();
 
   const filterflights = flights.filter(p => {
     return p.destination === searchStr || p.origin === searchStr;
@@ -61,7 +63,41 @@ const getFlightsAutoComplete = async(req, res, next) => {
   }
 };
 
+const getFindMatchingLocation = async(req, res, next) => {
+// User.find({ age: {$gte:10}}, null, {limit:2}, function (err, docs) 
+  const destorigin = req.params.destorigin;
+  const searchStr = destorigin.toUpperCase();
+  const searchStartsWith = "^" + searchStr;
+
+
+  const flights = await Flight.find(  {$or: [
+    { origin: {$regex: searchStartsWith, $options: "si"} }, 
+    { destination: {$regex: searchStartsWith, $options: "si"} },
+    { origin_full_name: {$regex: searchStartsWith, $options: "si"} },
+    { destination_full_name: {$regex: searchStartsWith, $options: "si"} },
+     ]} ).exec();
+
+  //(str1.startsWith('Sat', 3));
+  const filterflights = flights.filter(p => {
+    return p.destination.toUpperCase().startsWith(searchStr) ||
+           p.origin.toUpperCase().startsWith(searchStr) || 
+           p.destination_full_name.toUpperCase().startsWith(searchStr) || 
+           p.origin_full_name.toUpperCase().startsWith(searchStr)
+  }).map(p => {
+   if(p.origin_full_name.toUpperCase().startsWith(searchStr)) return p.origin_full_name;
+   if(p.destination_full_name.toUpperCase().startsWith(searchStr)) return p.destination_full_name;
+   if(p.origin.toUpperCase().startsWith(searchStr)) return p.origin;
+   if(p.destination.toUpperCase().startsWith(searchStr)) return p.destination;
+  })
+  const uniqueDestOriginflights = [... new Set(filterflights)].sort()
+  if (!uniqueDestOriginflights) {
+    throw new HttpError('Could not find a flight for the provided Destination Or Place of Origin.', 404);
+  }
+  res.json(uniqueDestOriginflights); 
+};
+
 exports.getFlights = getFlights;
 exports.getFlightsByDestinationOrigin = getFlightsByDestinationOrigin;
 exports.getFlightsAutoComplete = getFlightsAutoComplete; 
+exports.getFindMatchingLocation = getFindMatchingLocation;
 

@@ -43,7 +43,7 @@ export default function Instructions() {
           ))
         }
       </ul>
-      
+      <p>Forgot the Airport code? Start typing a city and we'll give you a few Suggestions....</p>; 
     </div>
   );
 }

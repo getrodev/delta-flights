@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FlightDataService from "../../services/FlightService";
-import FlightsSuggestions from "./FlightsSuggestions";
+
 import Input from '../Input/Input';
 import Button from '../Button/Button'
 
@@ -11,13 +11,24 @@ const FlightsList = () => {
   const [searchTitle, setSearchTitle] = useState("");
   
   useEffect(() => {
-    getFlights();
-  });
+    //getAllFlights();
+    getFlights()
+  },[]);
 
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
-    console.log(searchTitle);
     setSearchTitle(searchTitle);
+  };
+
+  const getAllFlights = () => {
+    FlightDataService.getAll(searchTitle)
+      .then(response => {
+        setFlights(response.data);
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
 
   const getFlights = () => {
@@ -31,12 +42,11 @@ const FlightsList = () => {
       });
   };
 
- 
   const getFlightsSuggestions = () => {
     FlightDataService.findByTitle(searchTitle)
     .then(response => {
       setFlights(response.data);
-      
+      console.log(response.data);
     })
     .catch(e => {
       console.log(e);
@@ -46,7 +56,13 @@ const FlightsList = () => {
   return (
     <div className="App">
       <div className="container">
-        <Input
+          <Button
+              type="button"
+              onClick={getFlights}
+            >
+              Search
+          </Button>
+          <Input
             type="text"
             className="Container"
             placeholder="Departure Or Arrival"
@@ -55,12 +71,13 @@ const FlightsList = () => {
           />
           <Button
               type="button"
-              onClick={getFlights}
+              onClick={getFlightsSuggestions}
             >
-              Search
+              Autocomplete
           </Button>
+          
       </div>  
-      <FlightsSuggestions items={getFlightsSuggestions()}/>   
+      
       <table>
         <tr>
           <th>Id</th>

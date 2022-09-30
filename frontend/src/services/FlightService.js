@@ -5,11 +5,11 @@ const getAll = () => {
 };
 
 const get = id => {
-  return http.get(`/${id}`);
+  return http.get(`/exactSearchFlights/${id}`);
 };
 
 const findByTitle = title => {
-  return http.get(`/search?title=${title}`);
+  return http.get(`/autocompletSearchLocations/${title}`);
 };
 
 const FlightService = {
