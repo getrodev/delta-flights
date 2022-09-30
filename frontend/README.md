@@ -18,7 +18,6 @@
 
 # Tech stack:
 
-Backend: node.js
+Backend: node.js/Express
 Frontend: ReactJS
-Database:
-Hosting:
+Database: MongoDB Atlas (cloud)/Mongoose

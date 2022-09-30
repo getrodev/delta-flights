@@ -10,7 +10,6 @@ const FlightsList = () => {
   const [flights, setFlights] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
   
-
   useEffect(() => {
     getFlights();
   });
@@ -21,7 +20,6 @@ const FlightsList = () => {
     setSearchTitle(searchTitle);
   };
 
-
   const getFlights = () => {
     FlightDataService.get(searchTitle)
       .then(response => {
@@ -31,6 +29,18 @@ const FlightsList = () => {
       .catch(e => {
         console.log(e);
       });
+  };
+
+ 
+  const getFlightsSuggestions = () => {
+    FlightDataService.findByTitle(searchTitle)
+    .then(response => {
+      setFlights(response.data);
+      
+    })
+    .catch(e => {
+      console.log(e);
+    });
   };
 
   return (
@@ -50,7 +60,7 @@ const FlightsList = () => {
               Search
           </Button>
       </div>  
-      <FlightsSuggestions />   
+      <FlightsSuggestions items={getFlightsSuggestions()}/>   
       <table>
         <tr>
           <th>Id</th>
