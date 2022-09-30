@@ -1,6 +1,9 @@
 const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose'); 
+
 
 const flightsRoutes = require('./App/routes/flights-routes');
 const HttpError = require('./App/models/http-error');
@@ -44,7 +47,7 @@ const PORT = process.env.PORT || 4000;
 
 
 mongoose
-  .connect("mongodb+srv://delta-flights:487ROTVESxWYgRbj@cluster0.clmg9z6.mongodb.net/?retryWrites=true&w=majority")  
+  .connect(process.env.MONGO_CONNECTION)  
   .then(() => {
     console.log('Connected to database!')
   })

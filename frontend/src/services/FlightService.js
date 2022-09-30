@@ -4,18 +4,18 @@ const getAll = () => {
   return http.get("/");
 };
 
-const getFlights = destorigin => {
-  return http.get(`/flights/${destorigin}`);
+const get = id => {
+  return http.get(`/${id}`);
 };
 
 const findByTitle = title => {
-  return http.get(`/flights/search?title=${title}`);
+  return http.get(`/search?title=${title}`);
 };
 
-const TutorialService = {
+const FlightService = {
   getAll,
-  getFlights,
+  get,
   findByTitle
 };
 
-export default TutorialService;
+export default FlightService;

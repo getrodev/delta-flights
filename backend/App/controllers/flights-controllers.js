@@ -30,10 +30,8 @@ const getFlightsAutoComplete = async(req, res, next) => {
           $search: {
             index: "autocomplete",
             autocomplete: {
-              query: req.query.name,
-              path: {
-                'wildcard': '*'
-              },
+              query: req.query.destination_full_name,
+              path: "destination_full_name",
               fuzzy: {
                 maxEdits: 1,
               },
@@ -43,8 +41,11 @@ const getFlightsAutoComplete = async(req, res, next) => {
         },
         {
           $project: {
-            name: 1,
-            _id: 1,
+            // destination: 1,
+            // origin: 1,
+            id: 1,
+            destination_full_name: 1,
+            //origin_full_name: 1,
           },
         },
         {

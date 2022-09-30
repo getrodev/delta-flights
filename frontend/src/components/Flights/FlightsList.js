@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import FlightDataService from "../../services/FlightService";
+import FlightsSuggestions from "./FlightsSuggestions";
 import Input from '../Input/Input';
 import Button from '../Button/Button'
 
-import './FlightList.css'; 
+import './FlightsList.css'; 
   
 const FlightsList = () => {
   const [flights, setFlights] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
+  
 
   useEffect(() => {
-    retrieveFlights();
-  }, []);
+    getFlights();
+  });
 
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
@@ -19,19 +21,9 @@ const FlightsList = () => {
     setSearchTitle(searchTitle);
   };
 
-  const retrieveFlights = () => {
-    FlightDataService.getAll()
-      .then(response => {
-        setFlights(response.data);
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
 
-  const findByTitle = () => {
-    FlightDataService.findByTitle(searchTitle)
+  const getFlights = () => {
+    FlightDataService.get(searchTitle)
       .then(response => {
         setFlights(response.data);
         console.log(response.data);
@@ -53,12 +45,12 @@ const FlightsList = () => {
           />
           <Button
               type="button"
-              onClick={findByTitle}
+              onClick={getFlights}
             >
               Search
           </Button>
-      </div>
-      
+      </div>  
+      <FlightsSuggestions />   
       <table>
         <tr>
           <th>Id</th>
@@ -76,9 +68,9 @@ const FlightsList = () => {
           <th>Origin</th>
           <th>Destination_Name</th>
           <th>Origin_Name</th>
-        
         </tr>
-        {flights && flights.map((val, key) => {
+        
+        {flights.map((val, key) => {
           return (
             <tr key={key}>
               <td>{val.id}</td>
@@ -100,7 +92,6 @@ const FlightsList = () => {
           )
         })}
       </table>
-     
     </div>
   );
 }; 
