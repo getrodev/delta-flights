@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get('/', flightsControllers.getFlights)
 router.get('/:destorigin', flightsControllers.getFlightsByDestinationOrigin);
-router.get('/search', flightsControllers.getFlightsByAutoComplete);
+router.get('/search', flightsControllers.getFlightsAutoComplete);
 
 module.exports = router;

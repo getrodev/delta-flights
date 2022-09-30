@@ -1,14 +1,12 @@
 const HttpError = require('../models/http-error');
 const Flight = require('../models/flight')
 
-
 const getFlights = async(req, res, next) => {
   const flights = await Flight.find().exec();
   res.json(flights);
 };
 
 const getFlightsByDestinationOrigin = async(req, res, next) => {
-
   const destorigin = req.params.destorigin;
   const searchStr = destorigin.toUpperCase();
   const flights = await Flight.find().exec();
@@ -23,34 +21,46 @@ const getFlightsByDestinationOrigin = async(req, res, next) => {
   res.json(filterflights); 
 };
 
-
-
-const getFlightsByAutoComplete = async(request, response) => {
+const getFlightsAutoComplete = async(req, res, next) => {
   try {
-      //const flights = await Flight.find().exec();
-      let result = await Flight.find().aggregate([
-          {
-              "$search": {
-                  "autocomplete": {
-                      "query": `${request.query.query}`,
-                      path: {
-                        'wildcard': '*'
-                      },
-                      "fuzzy": {
-                          "maxEdits": 2,
-                          "prefixLength": 3
-                      }
-                  }
-              }
-          }
-      ]).exec();
-      response.send(result);
-  } catch (e) {
-      response.status(500).send({ message: e.message });
+    let results;
+    if (req.query.name) {
+      results = await Flight.aggregate([
+        {
+          $search: {
+            index: "autocomplete",
+            autocomplete: {
+              query: req.query.name,
+              path: {
+                'wildcard': '*'
+              },
+              fuzzy: {
+                maxEdits: 1,
+              },
+              tokenOrder: "sequential",
+            },
+          },
+        },
+        {
+          $project: {
+            name: 1,
+            _id: 1,
+          },
+        },
+        {
+          $limit: 10,
+        },
+      ]);
+      if (results) return res.send(results);
+      console.log(results);
+    }
+    res.send([]);
+  } catch (error) {
+    res.send([]);
   }
 };
 
 exports.getFlights = getFlights;
 exports.getFlightsByDestinationOrigin = getFlightsByDestinationOrigin;
-exports.getFlightsByAutoComplete = getFlightsByAutoComplete;
+exports.getFlightsAutoComplete = getFlightsAutoComplete; 
 
