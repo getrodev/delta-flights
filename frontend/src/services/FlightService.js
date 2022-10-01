@@ -8,8 +8,8 @@ const get = id => {
   return http.get(`/exactSearchFlights/${id}`);
 };
 
-const findByTitle = title => {
-  return http.get(`/autocompletSearchLocations/${title}`);
+const findByTitle = title => { 
+  return http.get(`/autocompleteSearchLocations/${title}`);
 };
 
 const FlightService = {

@@ -5,37 +5,32 @@ import Input from '../Input/Input';
 import Button from '../Button/Button'
 
 import './FlightsList.css'; 
-  
+
 const FlightsList = () => {
   const [flights, setFlights] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
+  const [flightSuggestions, setFlightSuggestions] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
-    //getAllFlights();
-    getFlights()
-  },[]);
+    getFlights();
+    getFlightsSuggestions();
+  }, [searchTitle, setSearchTitle]);
 
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
+    
   };
 
-  const getAllFlights = () => {
-    FlightDataService.getAll(searchTitle)
-      .then(response => {
-        setFlights(response.data);
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
 
   const getFlights = () => {
     FlightDataService.get(searchTitle)
       .then(response => {
+        setIsLoading(true);
         setFlights(response.data);
         console.log(response.data);
+        setIsLoading(false);
       })
       .catch(e => {
         console.log(e);
@@ -45,8 +40,10 @@ const FlightsList = () => {
   const getFlightsSuggestions = () => {
     FlightDataService.findByTitle(searchTitle)
     .then(response => {
-      setFlights(response.data);
+      setIsLoading(true);
+      setFlightSuggestions(response.data);
       console.log(response.data);
+      setIsLoading(false);
     })
     .catch(e => {
       console.log(e);
@@ -69,13 +66,8 @@ const FlightsList = () => {
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
-          <Button
-              type="button"
-              onClick={getFlightsSuggestions}
-            >
-              Autocomplete
-          </Button>
-          
+          {flightSuggestions.map((flight) => <li key={flight}>{flight}</li>)}
+          {console.log(flightSuggestions[0])}
       </div>  
       
       <table>
@@ -96,8 +88,8 @@ const FlightsList = () => {
           <th>Destination_Name</th>
           <th>Origin_Name</th>
         </tr>
-        
-        {flights.map((val, key) => {
+        {isLoading && <p className="loader">Your results are one click away. Loading...</p>}
+        {!isLoading && flights.map((val, key) => {
           return (
             <tr key={key}>
               <td>{val.id}</td>

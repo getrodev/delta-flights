@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/', flightsControllers.getFlights)
 router.get('/exactSearchFlights/:destorigin', flightsControllers.getFlightsByDestinationOrigin);
 router.get('/autocompletSearchLocationsone/:destorigin', flightsControllers.getFlightsAutoComplete); // not in use
-router.get('/autocompletSearchLocations/:destorigin', flightsControllers.getFindMatchingLocation);
+router.get('/autocompleteSearchLocations/:destorigin', flightsControllers.getFindMatchingLocation);
 
 module.exports = router;
