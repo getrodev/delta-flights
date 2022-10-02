@@ -10,24 +10,23 @@ const FlightsList = () => {
   const [flights, setFlights] = useState([]);
   const [searchTitle, setSearchTitle] = useState("");
   const [flightSuggestions, setFlightSuggestions] = useState([])
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     getFlights();
     getFlightsSuggestions();
-  }, [searchTitle, setSearchTitle]);
+  }, [searchTitle]);
 
   const onChangeSearchTitle = e => {
-    const searchTitle = e.target.value;
+    e.preventDefault();
+    let searchTitle = e.target.value;
     setSearchTitle(searchTitle);
-    
   };
 
 
   const getFlights = () => {
     FlightDataService.get(searchTitle)
       .then(response => {
-        setIsLoading(true);
         setFlights(response.data);
         console.log(response.data);
         setIsLoading(false);
@@ -40,10 +39,8 @@ const FlightsList = () => {
   const getFlightsSuggestions = () => {
     FlightDataService.findByTitle(searchTitle)
     .then(response => {
-      setIsLoading(true);
       setFlightSuggestions(response.data);
       console.log(response.data);
-      setIsLoading(false);
     })
     .catch(e => {
       console.log(e);
@@ -66,11 +63,12 @@ const FlightsList = () => {
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
-          {flightSuggestions.map((flight) => <li key={flight}>{flight}</li>)}
-          {console.log(flightSuggestions[0])}
+          {isLoading && <p className="loader">Your results are one click away. Loading...</p>}
+          {!isLoading && flightSuggestions.length > 0 && flightSuggestions.map((flight) => <li key={flight}>{flight}</li>)}
+          {console.log(flightSuggestions.length)}
       </div>  
       
-      <table>
+      {!isLoading && flights.length>0 && <table>
         <tr>
           <th>Id</th>
           <th>Created</th>
@@ -88,8 +86,7 @@ const FlightsList = () => {
           <th>Destination_Name</th>
           <th>Origin_Name</th>
         </tr>
-        {isLoading && <p className="loader">Your results are one click away. Loading...</p>}
-        {!isLoading && flights.map((val, key) => {
+        {flights.map((val, key) => {
           return (
             <tr key={key}>
               <td>{val.id}</td>
@@ -110,7 +107,7 @@ const FlightsList = () => {
             </tr>
           )
         })}
-      </table>
+      </table>}
     </div>
   );
 }; 
