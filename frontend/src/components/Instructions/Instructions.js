@@ -5,23 +5,19 @@ import deltaSign from './delta-logo-4193.png';
 const emojis = [
   {
     emoji: '✈️',
-    name: "arrivals"
-  },
-  {
-    emoji: '🕺',
-    name: "dancing dude"
-  },
-  {
-    emoji: '😀',
-    name: "grinning face"
-  },
-  {
-    emoji: '💃',
-    name: "woman dancing"
+    name: "arrive"
   },
   {
     emoji: '✈️',
     name: "departure"
+  },
+  {
+    emoji: '✈️',
+    name: "arrivals"
+  },
+  {
+    emoji: '✈️',
+    name: "depart"
   }
 ];
 
@@ -43,7 +39,7 @@ export default function Instructions() {
           ))
         }
       </ul>
-      <p>Forgot the Airport code? Start typing a city and we'll give you a few Suggestions....</p>; 
+      <p>Forgot the Airport code? Start typing a city and we'll give you a few Suggestions....</p>
     </div>
   );
 }

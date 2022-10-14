@@ -9,7 +9,7 @@ const getFlights = async(req, res, next) => {
 const getFlightsByDestinationOrigin = async(req, res, next) => {
   const destorigin = req.params.destorigin;
   const searchStr = destorigin.toUpperCase();
-  //const flights = await Flight.find().exec();
+  //const flights = await Flight.find().exec(); // It's fetching the data too slowly..
   const flights = await Flight.find(
     {$or: [{ origin: searchStr }, { destination: destorigin }]}).exec();
 
@@ -62,6 +62,11 @@ const getFlightsAutoComplete = async(req, res, next) => {
     res.send([]);
   }
 };
+
+// we're searching for anything in the database that starts with the text to be searched, 
+// in four categories: origin, destination, orign_full_name, destination_full_name.
+// Then, we're filtering by the same criteria using js. 
+// The filter islikely not necessary but shows how you could further narrow the results as needed.
 
 const getFindMatchingLocation = async(req, res, next) => {
 // User.find({ age: {$gte:10}}, null, {limit:2}, function (err, docs) 

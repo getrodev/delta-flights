@@ -12,17 +12,22 @@ const FlightsList = () => {
   const [flightSuggestions, setFlightSuggestions] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   
+
   useEffect(() => {
     getFlights();
-    getFlightsSuggestions();
   }, [searchTitle]);
+
+  useEffect(() => {
+    getFlightsSuggestions();
+  }, [searchTitle, flightSuggestions]);
+
+   
 
   const onChangeSearchTitle = e => {
     e.preventDefault();
     let searchTitle = e.target.value;
     setSearchTitle(searchTitle);
   };
-
 
   const getFlights = () => {
     FlightDataService.get(searchTitle)
@@ -41,31 +46,27 @@ const FlightsList = () => {
     .then(response => {
       setFlightSuggestions(response.data);
       console.log(response.data);
+      setIsLoading(false);
     })
     .catch(e => {
       console.log(e);
     });
   };
 
+
   return (
     <div className="App">
       <div className="container">
-          <Button
-              type="button"
-              onClick={getFlights}
-            >
-              Search
-          </Button>
-          <Input
+        <Input
             type="text"
             className="Container"
             placeholder="Departure Or Arrival"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
+          <Button type="button" onClick={getFlights}>Search</Button>
           {isLoading && <p className="loader">Your results are one click away. Loading...</p>}
-          {!isLoading && flightSuggestions.length > 0 && flightSuggestions.map((flight) => <li key={flight}>{flight}</li>)}
-          {console.log(flightSuggestions.length)}
+          {!isLoading && flightSuggestions.map((flight) => <li key={flight}>{flight}</li>)}
       </div>  
       
       {!isLoading && flights.length>0 && <table>
